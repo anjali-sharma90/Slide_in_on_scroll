@@ -226,48 +226,74 @@
     </div>
 
     <script>
-      function debounce(func, wait = 20, immediate = true) {
-        var timeout;
-        return function () {
-          var context = this,
-            args = arguments;
-          var later = function () {
-            timeout = null;
-            if (!immediate) func.apply(context, args);
-          };
-          var callNow = immediate && !timeout;
-          clearTimeout(timeout);
-          timeout = setTimeout(later, wait);
-          if (callNow) func.apply(context, args);
-        };
-      }
+      // function debounce(func, wait = 20, immediate = true) {
+      //   var timeout;
+      //   return function () {
+      //     var context = this,
+      //       args = arguments;
+      //     var later = function () {
+      //       timeout = null;
+      //       if (!immediate) func.apply(context, args);
+      //     };
+      //     var callNow = immediate && !timeout;
+      //     clearTimeout(timeout);
+      //     timeout = setTimeout(later, wait);
+      //     if (callNow) func.apply(context, args);
+      //   };
+      // }
 
+      // document.addEventListener("DOMContentLoaded", function () {
+      //   function checkPosition() {
+      //     const windowHeight = window.innerHeight;
+      //     const images = document.querySelectorAll(".img");
+      //     images.forEach((element) => {
+      //       const positionFromTop = element.getBoundingClientRect().top;
+      //       const imageHeight = element.getBoundingClientRect().height;
+      //       const positionFromBottom = element.getBoundingClientRect().bottom;
+      //       const isHalfShownFromTop =
+      //         positionFromTop - windowHeight <= -imageHeight / 2;
+      //       const isHalfShownFromBottom = positionFromBottom >= imageHeight / 2;
+
+      //       if (
+      //         (positionFromTop < windowHeight && positionFromBottom > 0) ||
+      //         (positionFromBottom > windowHeight &&
+      //           positionFromTop < windowHeight)
+      //       ) {
+      //         element.classList.add("active");
+      //       } else {
+      //         element.classList.remove("active");
+      //       }
+      //     });
+      //   }
+
+      //   window.addEventListener("scroll", debounce(checkPosition));
+      // });
+
+      //USING OBSERVER API:
       document.addEventListener("DOMContentLoaded", function () {
-        function checkPosition() {
-          const windowHeight = window.innerHeight;
-          const images = document.querySelectorAll(".img");
-          images.forEach((element) => {
-            const positionFromTop = element.getBoundingClientRect().top;
-            const imageHeight = element.getBoundingClientRect().height;
-            const positionFromBottom = element.getBoundingClientRect().bottom;
-            const isHalfShownFromTop =
-              positionFromTop - windowHeight <= -imageHeight / 2;
-            const isHalfShownFromBottom = positionFromBottom >= imageHeight / 2;
+        // Create an intersection observer
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                // Add the 'active' class when the image starts entering the viewport
+                entry.target.classList.add("active");
+              } else {
+                // Remove the 'active' class when the image is out of view
+                entry.target.classList.remove("active");
+              }
+            });
+          },
+          {
+            threshold: 0.5, // Adjust the threshold to control when the class is added
+          }
+        );
 
-            if (
-              (positionFromTop < windowHeight && positionFromBottom > 0) ||
-              (positionFromBottom > windowHeight &&
-                positionFromTop < windowHeight)
-            ) {
-              element.classList.add("active");
-            } else {
-              element.classList.remove("active");
-            }
-          });
-        }
-
-        window.addEventListener("scroll", debounce(checkPosition));
+        // Observe each image element
+        const images = document.querySelectorAll(".img");
+        images.forEach((image) => observer.observe(image));
       });
+      0;
     </script>
 
     <style>
